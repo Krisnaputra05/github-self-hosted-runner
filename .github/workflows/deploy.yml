@@ -1,0 +1,35 @@
+name: Self-Hosted Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy Application
+        run: |
+          echo "=== Starting Deployment ==="
+
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            ./ /var/www/my-app/
+
+          echo "=== Deployment Completed ==="
+
+      - name: Verify Deployment
+        run: |
+          echo "Runner:"
+          whoami
+
+          echo "Deployment directory:"
+          ls -la /var/www/my-app
+
+          echo "SUCCESS: Self-hosted deployment completed!"
